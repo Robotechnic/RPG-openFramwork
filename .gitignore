@@ -1,2 +1,3 @@
 *.AppImage
- 
+*_debug*
+*_release* 
