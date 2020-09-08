@@ -3,22 +3,22 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     playerNameFont.load("00 Starmap Truetype.ttf",9);
-    test = new entity(50,50,"sprites/Male/Male 01-1.png","Robotechnic");
+    test = new Player(50,50,"sprites/Male/Male 01-1.png","Robotechnic");
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
     if (ofGetKeyPressed('z') || ofGetKeyPressed('Z')){
-        test->move(entity::UP);
+        test->move(Player::UP);
     }
     if (ofGetKeyPressed('s') || ofGetKeyPressed( 'S')){
-        test->move(entity::DOWN);
+        test->move(Player::DOWN);
     }
     if (ofGetKeyPressed('q') || ofGetKeyPressed('Q')){
-        test->move(entity::LEFT);
+        test->move(Player::LEFT);
     }
     if (ofGetKeyPressed('d') || ofGetKeyPressed( 'D')){
-        test->move(entity::RIGHT);
+        test->move(Player::RIGHT);
     }
 }
 

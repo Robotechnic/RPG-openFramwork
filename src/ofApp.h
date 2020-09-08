@@ -3,9 +3,11 @@
 #include "ofBaseApp.h"
 #include "of3dGraphics.h"
 #include "ofColor.h"
-#include "entity.h"
 #include "ofTrueTypeFont.h"
+#include "ofCamera.h"
 
+#include "entity.h"
+#include "player.h"
 
 class ofApp : public ofBaseApp{
 
@@ -28,6 +30,7 @@ public:
 
 private:
     ofTrueTypeFont playerNameFont;
-    entity *test;
+
+    Player *test;
 
 };

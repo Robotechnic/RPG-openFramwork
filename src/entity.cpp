@@ -1,7 +1,7 @@
 #include "entity.h"
 
 
-entity::entity(int x, int y, string spriteUrl, string name, bool displayName, int maxLife)
+Entity::Entity(int x, int y, string spriteUrl, string name, bool displayName, int maxLife)
 {
     this->x = x;
     this->y = y;
@@ -21,12 +21,12 @@ entity::entity(int x, int y, string spriteUrl, string name, bool displayName, in
     this->annimTime = ofGetElapsedTimeMillis();
 }
 
-entity::entity(const entity &e){
+Entity::Entity(const Entity &e){
     this->x = e.x;
     this->y = e.y;
 }
 
-void entity::draw(ofTrueTypeFont playerFonFace){
+void Entity::draw(ofTrueTypeFont playerFonFace){
     //debug x y pos
 //    ofSetColor(255,0,0);
 //    ofDrawCircle(this->x, this->y, 1);
@@ -47,12 +47,12 @@ void entity::draw(ofTrueTypeFont playerFonFace){
 }
 
 //direction constants
-const direction entity::UP = 3;
-const direction entity::DOWN = 0;
-const direction entity::LEFT = 1;
-const direction entity::RIGHT = 2;
+const direction Entity::UP = 3;
+const direction Entity::DOWN = 0;
+const direction Entity::LEFT = 1;
+const direction Entity::RIGHT = 2;
 
-void entity::move(direction entityDirection){
+void Entity::move(direction entityDirection){
     this->annimDirection = entityDirection;
 
     //play animation every ANNIM_DELAY milliseconds
