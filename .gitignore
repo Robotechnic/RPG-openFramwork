@@ -1,3 +1,4 @@
 *.AppImage
 *_debug*
 *_release* 
+*.zip

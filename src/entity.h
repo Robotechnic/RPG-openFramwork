@@ -17,11 +17,11 @@ using namespace std;
 
 typedef int direction;
 
-class entity
+class Entity
 {
 public:
-    entity(int x, int y, string spriteUrl, string name, bool displayName = true, int maxLife = 100);
-    entity(const entity &e);
+    Entity(int x, int y, string spriteUrl, string name, bool displayName = true, int maxLife = 100);
+    Entity(const Entity &e);
 
     void draw(ofTrueTypeFont playerFonFace);
 

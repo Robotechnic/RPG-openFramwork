@@ -16,9 +16,9 @@ Project{
             "src/entity.h",
             "src/player.cpp",
             "src/player.h",
-            'src/main.cpp',
-            'src/ofApp.cpp',
-            'src/ofApp.h',
+            "src/main.cpp",
+            "src/ofApp.cpp",
+            "src/ofApp.h",
         ]
 
         of.addons: [

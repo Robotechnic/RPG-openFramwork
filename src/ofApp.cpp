@@ -4,6 +4,7 @@
 void ofApp::setup(){
     playerNameFont.load("00 Starmap Truetype.ttf",9);
     test = new Player(50,50,"sprites/Male/Male 01-1.png","Robotechnic");
+
 }
 
 //--------------------------------------------------------------
