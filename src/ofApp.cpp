@@ -5,6 +5,7 @@ void ofApp::setup(){
     playerNameFont.load("00 Starmap Truetype.ttf",9);
     test = new Player(50,50,"sprites/Male/Male 01-1.png","Robotechnic");
 
+    cout<<"Load map: "<<m.loadMap("maps/startMap.tmx")<<endl;
 }
 
 //--------------------------------------------------------------
@@ -25,8 +26,8 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    m.draw(0,0,ofGetWidth(),ofGetHeight());
     test->draw(playerNameFont);
-
 }
 
 //--------------------------------------------------------------

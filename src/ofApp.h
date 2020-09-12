@@ -1,13 +1,12 @@
 #pragma once
 
 #include "ofBaseApp.h"
-#include "of3dGraphics.h"
 #include "ofColor.h"
 #include "ofTrueTypeFont.h"
-#include "ofCamera.h"
 
 #include "entity.h"
 #include "player.h"
+#include "map.h"
 
 class ofApp : public ofBaseApp{
 
@@ -32,5 +31,6 @@ private:
     ofTrueTypeFont playerNameFont;
 
     Player *test;
+    Map m;
 
 };

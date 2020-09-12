@@ -1,4 +1,4 @@
-#include "ofMain.h"
+#include "ofAppRunner.h"
 #include "ofApp.h"
 
 //========================================================================

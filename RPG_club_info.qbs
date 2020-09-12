@@ -14,15 +14,19 @@ Project{
         files: [
             "src/entity.cpp",
             "src/entity.h",
+            "src/map.cpp",
+            "src/map.h",
             "src/player.cpp",
             "src/player.h",
             "src/main.cpp",
             "src/ofApp.cpp",
             "src/ofApp.h",
+            "src/tile.cpp",
+            "src/tile.h",
         ]
 
         of.addons: [
-
+            'ofxXmlSettings'
         ]
 
         // additional flags for the project. the of module sets some

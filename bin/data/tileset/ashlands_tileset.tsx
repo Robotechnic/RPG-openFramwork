@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset version="1.4" tiledversion="1.4.2" name="ashlands_tileset" tilewidth="16" tileheight="16" tilecount="840" columns="40">
  <image source="ashlands_tileset.png" width="640" height="336"/>
- <terraintypes>
+ <terraintypes>/tileset/ashlands_tileset.tsx
   <terrain name="lava" tile="572"/>
   <terrain name="darkWater" tile="732"/>
   <terrain name="water" tile="412"/>
