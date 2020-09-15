@@ -4,6 +4,7 @@
 #include <ofImage.h>
 #include <ofXml.h>
 
+#include <ofGraphics.h>
 
 #include <string>
 #include <map>
@@ -26,7 +27,7 @@ private:
     int width, height,tilesWidth,tilesHieght,columns,tileSetImageWidth,tilesetImageHeight;
 
     void createTileSetMap();
-    map <int, Tile> tileSet;
+    map <int, Tile> annimTileSet;
     //layers
         //tileSet
             //tiles

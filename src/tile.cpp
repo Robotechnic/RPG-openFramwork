@@ -1,23 +1,23 @@
 #include "tile.h"
 
 Tile::Tile(){
-    this->tileId = 0;
+    this->tileId = -1;
     this->hasAnimation = false;
-    this->tileFrames.push_back(ofPoint(0,0));
+    this->tileFrames.push_back(0);
     this->annimationTime = 0;
     this->delay = 0;
     this->annimFrame = 0;
 }
 
-Tile::Tile(int tileId, int tileSetX, int tileSetY){
+Tile::Tile(int tileId){
     this->tileId = tileId;
     this->hasAnimation = false;
-    this->tileFrames.push_back(ofPoint(tileSetX,tileSetY));
+    this->tileFrames.push_back(tileId);
     this->annimationTime = 0;
     this->delay = 0;
     this->annimFrame = 0;
 }
-Tile::Tile(int tileId, int delay, vector<ofPoint> tileFrames){
+Tile::Tile(int tileId, int delay, vector<int> tileFrames){
     this->tileId = tileId;
     this->hasAnimation = true;
     this->tileFrames = tileFrames;
@@ -43,8 +43,12 @@ void Tile::update(){
 }
 
 int Tile::getX(){
-    return this->tileFrames.at(annimFrame).x;
+    return this->tileFrames.at(annimFrame);
 }
 int Tile::getY(){
-    return this->tileFrames.at(annimFrame).y;
+    return this->tileFrames.at(annimFrame);
+}
+
+int Tile::getTileId(){
+    return this->tileId;
 }

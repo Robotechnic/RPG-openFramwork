@@ -33,4 +33,6 @@ private:
     Player *test;
     Map m;
 
+    int zoom;
+
 };

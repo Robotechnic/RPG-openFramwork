@@ -70,7 +70,7 @@ void Entity::move(direction entityDirection){
             }
         }
         //debug
-        cout<<this->annimTime<<" "<<this->annimState<<" "<<this->annimStateDirection<<endl;
+        //cout<<this->annimTime<<" "<<this->annimState<<" "<<this->annimStateDirection<<endl;
     }
 
     //change entity coordinates

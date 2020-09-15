@@ -97,9 +97,11 @@ bool Map::loadMap(string map){
                     {
                         //split data and store it in vector
                         string mapStringData = data.getValue();
+                        mapStringData = mapStringData.substr(1,mapStringData.size()-2);
                         vector<string> mapLines = ofSplitString(mapStringData,"\n");
                         for (string linesTileString : mapLines){
                             vector <int> tilesLines;
+                            linesTileString = linesTileString.substr(0,linesTileString.size()-2);
                             vector <string> tilesColumn = ofSplitString(linesTileString,",");
                             for (string columnTile : tilesColumn){
                                 tilesLines.push_back(ofToInt(columnTile));
@@ -130,12 +132,12 @@ void Map::createTileSetMap(){
     auto tiles = this->tilesLoader.getChildren("tile");
     //lad all tiles in map tileSet
     for (ofXml tileDescriptor : tiles){
-        int id = tileDescriptor.getAttribute("id").getIntValue();
-        int idY = id/this->columns*16;
-        int idX = id%this->columns*16;
-        Tile t(id,idX,idY);
+        if (tileDescriptor.getChild("animation")){ // if tile have annimation
+            int id = tileDescriptor.getAttribute("id").getIntValue();
 
-        this->tileSet[id] = t;
+
+            this->annimTileSet.insert(make_pair(id,Tile(id)));
+        }
 
     }
 }
@@ -150,18 +152,22 @@ void Map::draw(int x, int y, int width, int height){
     int yMax = (height)/this->tilesHieght+1;
     yMax = yMax>this->height ? this->height : yMax;
 
-    //ofLogWarning()<<width<<" "<<height<<" "<<xMin<<" "<<yMin<<" "<<xMax<<" "<<yMax;
-
     //draw layer by layers
-
     for (vector<vector<int>> layer : this->tiles)
     {
-        for (int yV = yMin; yV<yMax; yV++)
-            for (int xV = xMin; xV < xMax; ++xV) {
-                this->tileSetImage.drawSubsection(xV*16,yV*16,
-                                                  this->tilesWidth,this->tilesHieght,
-                                                  tileSet[layer.at(y).at(x)].getX(),
-                                                  tileSet[layer.at(y).at(x)].getY());
+        for (int yV = yMin; yV<yMax && yV<(int)layer.size(); yV++)
+            for (int xV = xMin; xV < xMax && xV<(int)layer.at(yV).size(); ++xV) {
+                int id = layer.at(yV).at(xV);
+                if (id != 0){
+                    int y = floor(id/this->columns)*this->tilesHieght;
+                    int x = ((id-1)%this->columns)*this->tilesWidth;
+
+                    this->tileSetImage.drawSubsection(xV*16,yV*16,
+                                                      this->tilesWidth,this->tilesHieght,
+                                                      x,
+                                                      y,
+                                                      16,16);
+                }
             }
     }
 

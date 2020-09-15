@@ -2,7 +2,7 @@
 #define TILE_H
 
 #include <ofTimer.h>
-#include <ofPoint.h>
+#include <glm/vec2.hpp>
 
 #include <vector>
 
@@ -12,14 +12,15 @@ class Tile
 {
 public:
     Tile();
-    Tile(int tileId,int tileSetX,int tileSetY); //tile wihout annimation
-    Tile(int tileId, int delay, vector<ofPoint> tileFrames); //tile with annimation (multiples frames
+    Tile(int tileId); //tile wihout annimation
+    Tile(int tileId, int delay, vector<int> tileFrames); //tile with annimation (multiples frames
     Tile(const Tile& t);
 
     void update();
 
     int getX();
     int getY();
+    int getTileId();
 
 private:
     bool hasAnimation;
@@ -27,7 +28,7 @@ private:
     int tileId;
     int delay;
     int annimFrame;
-    vector<ofPoint> tileFrames;
+    vector<int> tileFrames;
 };
 
 #endif // TILE_H
