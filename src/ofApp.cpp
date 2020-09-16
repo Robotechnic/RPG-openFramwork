@@ -40,7 +40,7 @@ void ofApp::draw(){
     test->draw(playerNameFont);
 
     //draw fixed things (fps, ui...)
-    ofTranslate(test->getX()-ofGetWidth()/2+SPRITE_SIZE/2,test->getY()-ofGetHeight()/2+SPRITE_SIZE/2,zoom);
+    ofTranslate(test->getX()-ofGetWidth()/2+SPRITE_SIZE/2,test->getY()-ofGetHeight()/2+SPRITE_SIZE/2);
     playerNameFont.drawString(ofToString(ofGetFrameRate()),10,10);
 }
 
@@ -84,10 +84,12 @@ void ofApp::draw(){
 
 //}
 
-////--------------------------------------------------------------
-//void ofApp::windowResized(int w, int h){
-
-//}
+//--------------------------------------------------------------
+void ofApp::windowResized(int w, int h){
+    //calculate ratio
+    cout<<w<<" "<<h;
+    cout<<ofGetWidth()<<" "<<ofGetHeight()<<endl;
+}
 
 ////--------------------------------------------------------------
 //void ofApp::gotMessage(ofMessage msg){

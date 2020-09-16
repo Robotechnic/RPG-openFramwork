@@ -12,23 +12,20 @@ class Tile
 {
 public:
     Tile();
-    Tile(int tileId); //tile wihout annimation
-    Tile(int tileId, int delay, vector<int> tileFrames); //tile with annimation (multiples frames
+    Tile(int tileId, vector<glm::vec2> tileFrames); //tile with annimation (multiples frames)
     Tile(const Tile& t);
 
     void update();
 
-    int getX();
-    int getY();
+    int getFrame();
+    int getDelay();
     int getTileId();
 
 private:
-    bool hasAnimation;
     int annimationTime;
     int tileId;
-    int delay;
     int annimFrame;
-    vector<int> tileFrames;
+    vector<glm::vec2> tileFrames;
 };
 
 #endif // TILE_H

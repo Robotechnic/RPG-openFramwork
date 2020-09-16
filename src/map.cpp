@@ -75,7 +75,9 @@ bool Map::loadMap(string map){
             if (this->tileSetImage.load(tilesetImagePath)){
                 if (this->tileSetImage.getWidth() == tileSetImageSource.getAttribute("width").getIntValue() ||
                         this->tileSetImage.getHeight() == tileSetImageSource.getAttribute("height").getIntValue()){
-                    this->createTileSetMap();
+                    if(!this->createTileSetMap()){
+                        return false;
+                    }
                 } else {
                     ofLogError()<<"Wrong image size";
                     return false;
@@ -127,7 +129,7 @@ bool Map::loadMap(string map){
     return false;
 }
 
-void Map::createTileSetMap(){
+bool Map::createTileSetMap(){
     //first get tiles
     auto tiles = this->tilesLoader.getChildren("tile");
     //lad all tiles in map tileSet
@@ -135,12 +137,25 @@ void Map::createTileSetMap(){
         if (tileDescriptor.getChild("animation")){ // if tile have annimation
             int id = tileDescriptor.getAttribute("id").getIntValue();
 
+            vector<glm::vec2> framesVec;
 
-            this->annimTileSet.insert(make_pair(id,Tile(id)));
+            for (ofXml frame : tileDescriptor.getChild("animation").getChildren("frame")){
+                int tileId = frame.getAttribute("tileid").getIntValue();
+                int durration = frame.getAttribute("duration").getIntValue();
+                if (tileId == 0 || durration == 0){
+                    ofLogError()<<"Wrong frame xml attributes";
+                    return false;
+                }
+                framesVec.push_back(glm::vec2(tileId,durration));
+            }
+
+            this->annimTileSet.insert(make_pair(id,Tile(id,framesVec)));
         }
 
     }
+    return true;
 }
+
 
 void Map::draw(int x, int y, int width, int height){
     int xMin = x/this->tilesWidth-1;
@@ -158,6 +173,9 @@ void Map::draw(int x, int y, int width, int height){
         for (int yV = yMin; yV<yMax && yV<(int)layer.size(); yV++)
             for (int xV = xMin; xV < xMax && xV<(int)layer.at(yV).size(); ++xV) {
                 int id = layer.at(yV).at(xV);
+                if (this->annimTileSet.find(id) != this->annimTileSet.end()){
+                    id = this->annimTileSet[id].getFrame();
+                }
                 if (id != 0){
                     int y = floor(id/this->columns)*this->tilesHieght;
                     int x = ((id-1)%this->columns)*this->tilesWidth;

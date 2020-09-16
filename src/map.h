@@ -26,7 +26,8 @@ private:
 
     int width, height,tilesWidth,tilesHieght,columns,tileSetImageWidth,tilesetImageHeight;
 
-    void createTileSetMap();
+    bool createTileSetMap();
+
     map <int, Tile> annimTileSet;
     //layers
         //tileSet
