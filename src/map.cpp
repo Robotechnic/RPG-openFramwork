@@ -54,6 +54,12 @@ bool Map::loadMap(string map){
                 return false;
             }
 
+            this->tilesCount = this->tilesLoader.getAttribute("tilecount").getIntValue();
+            if (this->tilesCount == 0){
+                ofLogError()<<"Wrong xml tilescount atribute";
+                return false;
+            }
+
             ofXml tileSetImageSource = this->tilesLoader.getChild("image");
             if(!tileSetImageSource){
                 ofLogError()<<"Wrong xml tileset format";
@@ -75,7 +81,7 @@ bool Map::loadMap(string map){
             if (this->tileSetImage.load(tilesetImagePath)){
                 if (this->tileSetImage.getWidth() == tileSetImageSource.getAttribute("width").getIntValue() ||
                         this->tileSetImage.getHeight() == tileSetImageSource.getAttribute("height").getIntValue()){
-                    if(!this->createTileSetMap()){
+                    if(!this->createSpetialTileSetMap()){
                         return false;
                     }
                 } else {
@@ -90,11 +96,12 @@ bool Map::loadMap(string map){
 
             //get all layers of the map
             auto mapData = this->mapLoader.getChildren("layer");
+            int id;
             for (ofXml layer : mapData){
                 ofXml data = layer.getChild("data");
                 if (data){
-                    tiles.push_back(vector<vector<int>>()); //add layer to tiles vector
-                    //ofLogWarning()<<data.getAttribute("encoding").getValue();
+                    tiles.push_back(vector<vector<int*>>()); //add layer to tiles vector
+
                     if (data.getAttribute("encoding").getValue() == "csv") //verify if encoding is csv
                     {
                         //split data and store it in vector
@@ -102,11 +109,22 @@ bool Map::loadMap(string map){
                         mapStringData = mapStringData.substr(1,mapStringData.size()-2);
                         vector<string> mapLines = ofSplitString(mapStringData,"\n");
                         for (string linesTileString : mapLines){
-                            vector <int> tilesLines;
+                            vector <int*> tilesLines;
                             linesTileString = linesTileString.substr(0,linesTileString.size()-2);
                             vector <string> tilesColumn = ofSplitString(linesTileString,",");
                             for (string columnTile : tilesColumn){
-                                tilesLines.push_back(ofToInt(columnTile));
+                                id = ofToInt(columnTile);
+                                if (this->spetialTiles.find(id) != this->spetialTiles.end()){
+                                    tilesLines.push_back(&this->spetialTiles.at(id).at(0));
+                                } else {
+                                    if (this->tempStore.find(id) != this->tempStore.end()){
+                                        tilesLines.push_back(this->tempStore.at(id));
+                                    } else {
+                                        int *tmp = new int(id);
+                                        this->tempStore[id] = tmp;
+                                        tilesLines.push_back(tmp);
+                                    }
+                                }
                             }
                             this->tiles.at(this->tiles.size()-1).push_back(tilesLines);
                         }
@@ -129,7 +147,14 @@ bool Map::loadMap(string map){
     return false;
 }
 
-bool Map::createTileSetMap(){
+ofVec2f Map::idToPosition(int id){
+    ofVec2f pos;
+    pos.y = floor(id/this->columns)*this->tilesHieght;
+    pos.x = ((id-1)%this->columns)*this->tilesWidth;
+    return pos;
+}
+
+bool Map::createSpetialTileSetMap(){
     //first get tiles
     auto tiles = this->tilesLoader.getChildren("tile");
     //lad all tiles in map tileSet
@@ -137,7 +162,11 @@ bool Map::createTileSetMap(){
         if (tileDescriptor.getChild("animation")){ // if tile have annimation
             int id = tileDescriptor.getAttribute("id").getIntValue();
 
-            vector<glm::vec2> framesVec;
+            vector<int> framesVec;
+            framesVec.push_back(id); //curent tile
+            framesVec.push_back(4); //current index
+            framesVec.push_back(ofGetElapsedTimeMillis()); //last update
+            framesVec.push_back(500); //delay between all tiles
 
             for (ofXml frame : tileDescriptor.getChild("animation").getChildren("frame")){
                 int tileId = frame.getAttribute("tileid").getIntValue();
@@ -146,10 +175,11 @@ bool Map::createTileSetMap(){
                     ofLogError()<<"Wrong frame xml attributes";
                     return false;
                 }
-                framesVec.push_back(glm::vec2(tileId,durration));
+                framesVec.push_back(tileId);
             }
 
-            this->annimTileSet.insert(make_pair(id,Tile(id,framesVec)));
+
+            this->spetialTiles.insert(make_pair(id,framesVec));
         }
 
     }
@@ -158,35 +188,49 @@ bool Map::createTileSetMap(){
 
 
 void Map::draw(int x, int y, int width, int height){
-    int xMin = x/this->tilesWidth-1;
+
+    int xMin = (x/this->tilesWidth);
     xMin = xMin<0 ? 0 : xMin;
-    int yMin = y/this->tilesHieght-1;
+    int yMin = (y/this->tilesHieght);
     yMin = yMin<0 ? 0 : yMin;
-    int xMax = (width)/this->tilesWidth+1;
+    int xMax = (width/this->tilesWidth)+1;
     xMax = xMax>this->width ? this->width : xMax;
-    int yMax = (height)/this->tilesHieght+1;
+    int yMax = (height/this->tilesHieght)+1;
     yMax = yMax>this->height ? this->height : yMax;
 
+
     //draw layer by layers
-    for (vector<vector<int>> layer : this->tiles)
+   // cout<<"draw "<<ofGetElapsedTimeMillis()<<endl;
+    ofVec2f pos;
+    for (vector<vector<int*>> layer : this->tiles)
     {
         for (int yV = yMin; yV<yMax && yV<(int)layer.size(); yV++)
             for (int xV = xMin; xV < xMax && xV<(int)layer.at(yV).size(); ++xV) {
-                int id = layer.at(yV).at(xV);
-                if (this->annimTileSet.find(id) != this->annimTileSet.end()){
-                    id = this->annimTileSet[id].getFrame();
-                }
-                if (id != 0){
-                    int y = floor(id/this->columns)*this->tilesHieght;
-                    int x = ((id-1)%this->columns)*this->tilesWidth;
-
+                if (layer.at(yV).at(xV) != 0){
+                    pos = this->idToPosition(*layer.at(yV).at(xV));
                     this->tileSetImage.drawSubsection(xV*16,yV*16,
-                                                      this->tilesWidth,this->tilesHieght,
-                                                      x,
-                                                      y,
-                                                      16,16);
+                                                      16,16,
+                                                      pos.x,
+                                                      pos.y,
+                                                      this->tilesWidth,this->tilesHieght
+                    );
                 }
             }
     }
+    //cout<<"end "<<ofGetElapsedTimeMillis()<<" Total Tiles:"<<(xMax-xMin)*(yMax-yMin)<<endl;
 
+}
+
+void Map::updateAnimation(){
+    for (auto &tile : this->spetialTiles){
+        int frame = tile.second.at(1);
+        int &last = tile.second.at(2);
+        int delay = tile.second.at(3);
+        if (last + delay < (int)ofGetElapsedTimeMillis()){
+            last = ofGetElapsedTimeMillis();
+            frame = frame<(int)tile.second.size()-1 ? frame + 1 : 4;
+            tile.second.at(0) = tile.second.at(frame);
+            tile.second.at(1) = frame;
+        }
+    }
 }

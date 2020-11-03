@@ -21,8 +21,6 @@ Project{
             "src/main.cpp",
             "src/ofApp.cpp",
             "src/ofApp.h",
-            "src/tile.cpp",
-            "src/tile.h",
         ]
 
         of.addons: [

@@ -7,9 +7,9 @@ void ofApp::setup(){
 
     cout<<"Load map: "<<m.loadMap("maps/startMap.tmx")<<endl;
 
-    zoom = 0;
+    zoom = 00;
 
-    //m.draw(test->getX(),test->getY(),test->getX()+ofGetWidth(),test->getY()+ofGetHeight());
+   // m.draw(test->getX(),test->getY(),test->getX()+ofGetWidth(),test->getY()+ofGetHeight());
 }
 
 //--------------------------------------------------------------
@@ -26,11 +26,13 @@ void ofApp::update(){
     if (ofGetKeyPressed('d') || ofGetKeyPressed( 'D')){
         test->move(Player::RIGHT);
     }
+    m.updateAnimation();
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
 
+    int time = ofGetElapsedTimeMillis();
     //draw map and mobs
     ofTranslate(-test->getX(),-test->getY(),zoom);
     m.draw(test->getX(),test->getY(),test->getX()+ofGetWidth(),test->getY()+ofGetHeight());
@@ -42,6 +44,8 @@ void ofApp::draw(){
     //draw fixed things (fps, ui...)
     ofTranslate(test->getX()-ofGetWidth()/2+SPRITE_SIZE/2,test->getY()-ofGetHeight()/2+SPRITE_SIZE/2);
     playerNameFont.drawString(ofToString(ofGetFrameRate()),10,10);
+    ofLog()<<ofGetElapsedTimeMillis()-time<<" "<<int(ofGetFrameRate());
+
 }
 
 //--------------------------------------------------------------

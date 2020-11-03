@@ -5,11 +5,11 @@
 #include <ofXml.h>
 
 #include <ofGraphics.h>
+#include <ofVec2f.h>
 
 #include <string>
 #include <map>
 
-#include "tile.h"
 
 using namespace std;
 
@@ -20,19 +20,24 @@ public:
     Map();
     bool loadMap(string map);
     void draw(int x, int y,int width, int height);
+    void updateAnimation();
+    ofVec2f idToPosition(int id);
 
 private:
     ofImage tileSetImage;
 
-    int width, height,tilesWidth,tilesHieght,columns,tileSetImageWidth,tilesetImageHeight;
+    int width, height,tilesWidth,tilesHieght,columns,tileSetImageWidth,tilesetImageHeight,tilesCount;
 
-    bool createTileSetMap();
+    bool createSpetialTileSetMap();
 
-    map <int, Tile> annimTileSet;
+    //tile id
+        //id of each frame
+    map <int, vector<int>> spetialTiles;
+    map <int, int*> tempStore;
     //layers
         //tileSet
             //tiles
-    vector<vector<vector<int>>> tiles;
+    vector<vector<vector<int*>>> tiles;
 
     ofXml mapLoader,tilesLoader;
 
