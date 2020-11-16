@@ -202,21 +202,36 @@ void Map::draw(int x, int y, int width, int height){
     //draw layer by layers
    // cout<<"draw "<<ofGetElapsedTimeMillis()<<endl;
     ofVec2f pos;
+    this->tileSetImage.bind();
     for (vector<vector<int*>> layer : this->tiles)
     {
+        ofVboMesh mesh;
         for (int yV = yMin; yV<yMax && yV<(int)layer.size(); yV++)
             for (int xV = xMin; xV < xMax && xV<(int)layer.at(yV).size(); ++xV) {
                 if (layer.at(yV).at(xV) != 0){
                     pos = this->idToPosition(*layer.at(yV).at(xV));
-                    this->tileSetImage.drawSubsection(xV*16,yV*16,
-                                                      16,16,
-                                                      pos.x,
-                                                      pos.y,
-                                                      this->tilesWidth,this->tilesHieght
-                    );
+                    mesh.addVertex({xV*this->tilesWidth,yV*this->tilesWidth,0});
+                    mesh.addVertex({xV*this->tilesWidth+this->tilesWidth,yV*this->tilesWidth,0});
+                    mesh.addVertex({xV*this->tilesWidth+this->tilesWidth,yV*this->tilesHieght+this->tilesHieght,0});
+
+                    mesh.addVertex({xV*this->tilesWidth,yV*this->tilesWidth,0});
+                    mesh.addVertex({xV*this->tilesWidth+this->tilesWidth,yV*this->tilesHieght+this->tilesHieght,0});
+                    mesh.addVertex({xV*this->tilesWidth,yV*this->tilesWidth+this->tilesHieght,0});
+
+                    mesh.addTexCoord({pos.x,pos.y});
+                    mesh.addTexCoord({pos.x+this->tilesWidth,pos.y});
+                    mesh.addTexCoord({pos.x+this->tilesWidth,pos.y+this->tilesHieght});
+
+                    mesh.addTexCoord({pos.x,pos.y});
+                    mesh.addTexCoord({pos.x+this->tilesWidth,pos.y+this->tilesHieght});
+                    mesh.addTexCoord({pos.x,pos.y+this->tilesHieght});
+
                 }
             }
+
+        mesh.draw();
     }
+    this->tileSetImage.unbind();
     //cout<<"end "<<ofGetElapsedTimeMillis()<<" Total Tiles:"<<(xMax-xMin)*(yMax-yMin)<<endl;
 
 }

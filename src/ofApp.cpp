@@ -32,7 +32,7 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
 
-    int time = ofGetElapsedTimeMillis();
+//    int time = ofGetElapsedTimeMillis();
     //draw map and mobs
     ofTranslate(-test->getX(),-test->getY(),zoom);
     m.draw(test->getX(),test->getY(),test->getX()+ofGetWidth(),test->getY()+ofGetHeight());
@@ -44,7 +44,7 @@ void ofApp::draw(){
     //draw fixed things (fps, ui...)
     ofTranslate(test->getX()-ofGetWidth()/2+SPRITE_SIZE/2,test->getY()-ofGetHeight()/2+SPRITE_SIZE/2);
     playerNameFont.drawString(ofToString(ofGetFrameRate()),10,10);
-    ofLog()<<ofGetElapsedTimeMillis()-time<<" "<<int(ofGetFrameRate());
+//    ofLog()<<ofGetElapsedTimeMillis()-time<<" "<<int(ofGetFrameRate());
 
 }
 

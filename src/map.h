@@ -6,6 +6,7 @@
 
 #include <ofGraphics.h>
 #include <ofVec2f.h>
+#include <ofVboMesh.h>
 
 #include <string>
 #include <map>
