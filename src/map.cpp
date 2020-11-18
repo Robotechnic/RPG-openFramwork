@@ -134,6 +134,83 @@ bool Map::loadMap(string map){
                     }
                 }
             }
+
+            auto objectGroups  = this->mapLoader.getChildren("objectgroup");
+
+            for (ofXml objectGroup : objectGroups){
+                string name = objectGroup.getAttribute("name").getValue();
+                if (name != ""){
+                    for (ofXml object : objectGroup.getChildren("object")) {
+                        string objName = object.getAttribute("name").getValue();
+                        if (name == "startStopPoint"){
+                        if (objName != ""){
+
+                            if (objName == "spawn"){
+                                float spawnX = object.getAttribute("x").getFloatValue();
+                                float spawnY = object.getAttribute("y").getFloatValue();
+
+                                if (!spawnX || !spawnY){
+                                    ofLogError()<<"Wrong xml atribute (spawn coordinates)";
+                                    return false;
+                                }
+                                this->spawn.x = spawnX-400;
+                                this->spawn.y = spawnY-200;
+                            } else if (name == "end"){
+                                float endX = object.getAttribute("x").getFloatValue();
+                                float endY = object.getAttribute("y").getFloatValue();
+                                float width = object.getAttribute("width").getFloatValue();
+                                float height = object.getAttribute("height").getFloatValue();
+
+                                if (!endX || !endY || !width || !height){
+                                    ofLogError()<<"Wrong xml atribute (end coordinates)";
+                                    return false;
+                                }
+                                this->end.x = endX-400;
+                                this->end.y = endY-200;
+                                this->end.width = width;
+                                this->end.height = height;
+                            }}}
+                            else if (name == "death"){
+                                float polyX = object.getAttribute("x").getFloatValue();
+                                float polyY = object.getAttribute("y").getFloatValue();
+
+                                if (!polyX || !polyY){
+                                    ofLogError()<<"Wrong xml atribute (x,y of polygon)";
+                                    return false;
+                                }
+
+                                ofXml polygon = object.getChild("polygon");
+                                if (!polygon){
+                                    ofLogError()<<"Polygon don't exist";
+                                    return false;
+                                }
+                                string points = polygon.getAttribute("points").getValue();
+                                if (points == ""){
+                                    ofLogError()<<"Wrong xml atribute (points)";
+                                    return false;
+                                }
+
+                                vector<string> pos = ofSplitString(points, " ");
+                                Zone z ({});
+                                for (string p : pos){
+                                    vector<string> relativePos = ofSplitString(p,",");
+                                    float x = ofToFloat(relativePos.at(0)) + polyX ;
+                                    float y = ofToFloat(relativePos.at(1)) + polyY ;
+
+                                    z.addPoint(ofVec2f(x,y));
+                                }
+                                this->deathZones.push_back(z);
+                            }
+                        else {
+                            ofLogError()<<"Wrong xml data (object name)";
+                            return false;
+                        }
+                    }
+                } else {
+                    ofLogError()<<"Wrong xml data (objectgroup name)";
+                    return false;
+                }
+            }
             //everithing loaded !
             return true;
 
@@ -233,7 +310,6 @@ void Map::draw(int x, int y, int width, int height){
     }
     this->tileSetImage.unbind();
     //cout<<"end "<<ofGetElapsedTimeMillis()<<" Total Tiles:"<<(xMax-xMin)*(yMax-yMin)<<endl;
-
 }
 
 void Map::updateAnimation(){
@@ -248,4 +324,13 @@ void Map::updateAnimation(){
             tile.second.at(1) = frame;
         }
     }
+}
+
+bool Map::calcDeath(int x, int y){
+    for (Zone z : this->deathZones){
+        if (z.inZone(ofVec2f(x,y))){
+            return true;
+        }
+    }
+    return false;
 }

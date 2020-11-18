@@ -6,10 +6,13 @@
 
 #include <ofGraphics.h>
 #include <ofVec2f.h>
+#include <ofRectangle.h>
 #include <ofVboMesh.h>
 
 #include <string>
 #include <map>
+
+#include "zone.h"
 
 
 using namespace std;
@@ -22,7 +25,10 @@ public:
     bool loadMap(string map);
     void draw(int x, int y,int width, int height);
     void updateAnimation();
+    bool calcDeath(int x, int y);
     ofVec2f idToPosition(int id);
+
+    ofVec2f getSpawn(){return this->spawn;};
 
 private:
     ofImage tileSetImage;
@@ -39,6 +45,10 @@ private:
         //tileSet
             //tiles
     vector<vector<vector<int*>>> tiles;
+
+    ofVec2f spawn;
+    ofRectangle end;
+    vector <Zone> deathZones;
 
     ofXml mapLoader,tilesLoader;
 

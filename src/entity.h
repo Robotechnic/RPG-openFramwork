@@ -27,8 +27,10 @@ public:
 
     void move(direction entityDirection);
 
-    int getX(){return x;};
-    int getY(){return y;};
+    float getX(){return x;};
+    float getY(){return y;};
+    void setX(int x){this->x = x;};
+    void setY(int y){this->y = y;};
     int getLife(){return this->life;};
     string getName(){return this->name; };
 
@@ -39,7 +41,7 @@ public:
     static const direction RIGHT;
 
 protected:
-    int x, y;
+    float x, y;
     int life,maxLife;
     bool displayName;
 

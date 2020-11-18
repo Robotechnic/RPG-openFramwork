@@ -6,6 +6,10 @@ void ofApp::setup(){
     test = new Player(50,50,"sprites/Male/Male 01-1.png","Robotechnic");
 
     cout<<"Load map: "<<m.loadMap("maps/startMap.tmx")<<endl;
+    ofVec2f pos = m.getSpawn();
+    ofLog()<<pos;
+    test->setX(pos.x);
+    test->setY(pos.y);
 
     zoom = 00;
 
@@ -27,6 +31,11 @@ void ofApp::update(){
         test->move(Player::RIGHT);
     }
     m.updateAnimation();
+    if (m.calcDeath(test->getX()+ofGetWidth()/2-SPRITE_SIZE/2,test->getY()+ofGetHeight()/2)){
+        ofVec2f spawn = m.getSpawn();
+        test->setX(spawn.x);
+        test->setY(spawn.y);
+    }
 }
 
 //--------------------------------------------------------------
@@ -36,6 +45,7 @@ void ofApp::draw(){
     //draw map and mobs
     ofTranslate(-test->getX(),-test->getY(),zoom);
     m.draw(test->getX(),test->getY(),test->getX()+ofGetWidth(),test->getY()+ofGetHeight());
+
 
     //draw player
     ofTranslate(ofGetWidth()/2-SPRITE_SIZE/2,ofGetHeight()/2-SPRITE_SIZE/2,zoom);
